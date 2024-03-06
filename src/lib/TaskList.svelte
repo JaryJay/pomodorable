@@ -11,9 +11,7 @@
 	let expandNewTaskForm = false;
 </script>
 
-<div
-	class="p-8 space-y-4 bg-indigo-300 rounded-md bg-clip-padding backdrop-filter backdrop-blur-[2px] bg-opacity-20 border border-indigo-100 border-opacity-20 shadow-lg"
->
+<div class="p-8 space-y-4 bg-indigo-300 border-indigo-100 glass-morphism">
 	<div class="flex justify-between w-full">
 		<h2 class="text-lg">Task List</h2>
 		<div><button>.</button></div>
