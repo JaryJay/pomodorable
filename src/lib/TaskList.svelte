@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from "./Button.svelte";
 	import CreateTaskForm from "./CreateTaskForm.svelte";
 	import TaskCard from "./TaskCard.svelte";
 	import type { Task } from "./tasks";
@@ -16,19 +17,24 @@
 		<h2 class="text-lg">Task List</h2>
 		<div><button>.</button></div>
 	</div>
-	<div class="space-y-4">
+	<div class="space-y-4 transition-all">
 		{#each tasks as task (task.name)}
-			<TaskCard {task} />
+			<TaskCard bind:task />
 		{/each}
-		{#if expandNewTaskForm}
-			<CreateTaskForm on:create={(event) => addTask(event.detail)} />
-		{:else}
-			<button
-				on:click={() => (expandNewTaskForm = true)}
+		<CreateTaskForm
+			on:create={(event) => addTask(event.detail)}
+			bind:expanded={expandNewTaskForm}
+		/>
+		{#if !expandNewTaskForm}
+			<Button
+				on:click={(event) => {
+					event.stopPropagation();
+					expandNewTaskForm = true;
+				}}
 				class="w-full items-center"
 			>
 				Add Task
-			</button>
+			</Button>
 		{/if}
 	</div>
 </div>

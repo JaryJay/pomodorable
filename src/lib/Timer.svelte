@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+    import Button from "./Button.svelte";
 
   let intervalID = 0;
   export let on = true;
@@ -17,7 +18,6 @@
     if (on) {
       intervalID = setInterval(() => {
         time++;
-        console.log(time);
       }, 1000);
     }
 
@@ -32,7 +32,6 @@
       on = true;
       intervalID = setInterval(() => {
         time++;
-        console.log(time);
       }, 1000);
     }
   };
@@ -45,5 +44,5 @@
     <h1>{formattedTime}</h1>
   </span>
 
-  <button on:click={toggleTimer}>{on ? "Pause" : "Resume"}</button>
+  <Button on:click={toggleTimer}>{on ? "Pause" : "Resume"}</Button>
 </div>
