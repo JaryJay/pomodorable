@@ -1,12 +1,27 @@
 <script lang="ts">
+	import { invoke } from "@tauri-apps/api";
 	import Button from "./Button.svelte";
 	import CreateTaskForm from "./CreateTaskForm.svelte";
 	import TaskCard from "./TaskCard.svelte";
 	import type { Task } from "./tasks";
+	import { onMount } from "svelte";
 
 	let tasks: Task[] = [];
+
+	async function loadUserSettings() {
+		invoke("load_tasks")
+			.then((result: unknown) => {
+				if (result) tasks = JSON.parse(result as string) as Task[];
+			})
+			.catch(console.error);
+	}
+	onMount(() => {
+		loadUserSettings();
+	});
+
 	function addTask(task: any) {
 		tasks = [...tasks, task as Task];
+		invoke("save_data", { data: JSON.stringify(tasks) });
 	}
 
 	let expandNewTaskForm = false;
