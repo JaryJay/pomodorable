@@ -4,8 +4,6 @@
   import Wrapper from "./lib/Wrapper.svelte";
 </script>
 
-<main class="space-y-8 p-8">
+<main>
   <Wrapper />
-  <Timer />
-  <TaskList />
 </main>

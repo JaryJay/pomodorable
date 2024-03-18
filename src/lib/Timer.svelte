@@ -3,6 +3,7 @@
     import Button from "./Button.svelte";
     import { LONG_BREAK, POMODORO, SHORT_BREAK, states } from "./timer";
     import TextButton from "./TextButton.svelte";
+    import { completedPomodoroCount } from "./store";
 
     export let on = true;
 
@@ -21,14 +22,17 @@
     }
 
     function moveToNextState() {
-        if (currentState == POMODORO && pomodoroNumber % 4 != 0) {
-            currentState = SHORT_BREAK;
-        } else if (currentState == POMODORO && pomodoroNumber % 4 == 0) {
-            currentState = LONG_BREAK;
+        if (currentState == POMODORO) {
+            completedPomodoroCount.update((c) => c + 1);
+
+            if (pomodoroNumber % 4 != 0) {
+                currentState = SHORT_BREAK;
+            } else if (pomodoroNumber % 4 == 0) {
+                currentState = LONG_BREAK;
+            }
         } else {
             currentState = POMODORO;
             pomodoroNumber++;
-            dispatch("pomodoroEnd");
         }
         time = 0;
     }
@@ -46,8 +50,7 @@
     })();
 
     onMount(() => {
-        if (on)
-            intervalID = setInterval(updateTime, 1000);
+        if (on) intervalID = setInterval(updateTime, 1000);
         return () => intervalID && clearInterval(intervalID);
     });
 
@@ -68,9 +71,13 @@
     <div class="flex justify-center space-x-4">
         {#each states as state, i (state.name)}
             {#if i == currentState}
-                <TextButton class="bg-gray-600 bg-opacity-40"><b>{state.name}</b></TextButton>
+                <TextButton class="bg-gray-600 bg-opacity-40"
+                    ><b>{state.name}</b></TextButton
+                >
             {:else}
-                <TextButton on:click={() => setState(i)}>{state.name}</TextButton>
+                <TextButton on:click={() => setState(i)}
+                    >{state.name}</TextButton
+                >
             {/if}
         {/each}
     </div>

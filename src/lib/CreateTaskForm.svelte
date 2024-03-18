@@ -20,19 +20,25 @@
 	let newTask: Task = generateNewTask();
 
 	function handleCreate() {
+		if (!newTask.estimatedPomodoros) newTask.estimatedPomodoros = 0;
 		dispatch("create", newTask);
 		newTask = generateNewTask();
 		nameInput.focus();
 	}
 
-	function handleClickOutside(event: MouseEvent) {
+	function handleMousePressOutside(event: MouseEvent) {
 		if (expanded && container && !event.composedPath().includes(container)) {
 			expanded = false;
 		}
 	}
+	function onKeyDown(event: KeyboardEvent) {
+		if (event.key == 'Enter') {
+			handleCreate();
+		}
+	}
 	onMount(() => {
-		document.addEventListener("click", handleClickOutside);
-		return () => document.removeEventListener("click", handleClickOutside);
+		document.addEventListener("mousedown", handleMousePressOutside);
+		return () => document.removeEventListener("mousedown", handleMousePressOutside);
 	});
 </script>
 
@@ -46,6 +52,7 @@
 		<input
 			bind:value={newTask.name}
 			bind:this={nameInput}
+			on:keydown={onKeyDown}
 			placeholder="Task name"
 			class="w-full p-4 bg-transparent placeholder:text-white placeholder:text-opacity-25 border-none outline-none text-lg"
 		/>
@@ -53,7 +60,9 @@
 		<div class="flex max-h-12 space-x-2">
 			<input
 				bind:value={newTask.estimatedPomodoros}
+				on:keydown={onKeyDown}
 				type="number"
+				required
 				class="p-4 w-24 bg-indigo-200 bg-opacity-10 border-opacity-10 border-none active:border-none glass-morphism-basic"
 			/>
 			<button on:click={() => newTask.estimatedPomodoros++} tabindex="-1"
