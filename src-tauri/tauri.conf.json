@@ -20,6 +20,14 @@
       },
       "window": {
         "all": true
+      },
+      "protocol": {
+        "all": true,
+        "asset": true,
+        "assetScope": ["**"]
+      },
+      "notification": {
+        "all": true
       }
     },
     "bundle": {
