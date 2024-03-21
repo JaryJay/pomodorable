@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Task } from "./tasks";
 	import Button from "./Button.svelte";
+	import MaterialSymbolsDragIndicator from '~icons/material-symbols/drag-indicator';
 	import MaterialSymbolsCheckCircleRounded from '~icons/material-symbols/check-circle-rounded';
 	import MaterialSymbolsMoreVert from '~icons/material-symbols/more-vert';
 	import TextButton from "./TextButton.svelte";
@@ -83,9 +84,10 @@
 	</div>
 	{:else}
 		<div
-			class="flex p-4 space-x-2 justify-between bg-indigo-300 rounded-md bg-clip-padding backdrop-filter backdrop-blur-[2px] bg-opacity-40 border border-indigo-200 border-opacity-40 shadow-lg"
+			class="flex p-4 pl-1 space-x-2 justify-between bg-indigo-300 rounded-md bg-clip-padding backdrop-filter backdrop-blur-[2px] bg-opacity-40 border border-indigo-200 border-opacity-40 shadow-lg"
 		>
-			<div class="flex space-x-2">
+			<div class="flex space-x-2 align-middle">
+				<MaterialSymbolsDragIndicator />
 				<button on:click={() => (task.done = !task.done)}>
 					<MaterialSymbolsCheckCircleRounded
 						class="text-6 hover:scale-120 text-white transition-all {task.done
