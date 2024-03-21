@@ -22,6 +22,10 @@
 		}
 	}
 
+	function onDelete() {
+		dispatch("delete");
+	}
+
 	function onCancel() {
 		expanded = false;
 		editTaskCopy = JSON.parse(JSON.stringify(task));
@@ -70,7 +74,7 @@
 		<div
 			class="w-full space-x-2 bg-indigo-600 bg-opacity-20 p-4 flex justify-between"
 		>
-			<TextButton on:click={() => dispatch("delete")} class="text-white text-opacity-70 hover:text-opacity-100">Delete</TextButton>
+			<TextButton on:click={onDelete} class="text-white text-opacity-70 hover:text-opacity-100">Delete</TextButton>
 			<div class="space-x-2">
 				<TextButton on:click={onCancel} class="text-white text-opacity-70 hover:text-opacity-100">Cancel</TextButton>
 				<Button on:click={onSave}>Save</Button>

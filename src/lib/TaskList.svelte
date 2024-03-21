@@ -33,6 +33,11 @@
         invoke("save_data", { data: JSON.stringify(tasks) });
     }
 
+    function deleteTaskCard(index: number) {
+        tasks = tasks.filter((_, i) => i !== index);
+        invoke("save_data", { data: JSON.stringify(tasks) });
+    }
+
     let expandNewTaskForm = false;
 </script>
 
@@ -42,8 +47,8 @@
         <div><button>.</button></div>
     </div>
     <div class="space-y-4 transition-all">
-        {#each tasks as task (task.name)}
-            <TaskCard bind:task />
+        {#each tasks as task, i (task.name)}
+            <TaskCard bind:task on:delete={() => deleteTaskCard(i)} />
         {/each}
         <CreateTaskForm
             on:create={(event) => addTask(event.detail)}
