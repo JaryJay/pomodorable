@@ -23,6 +23,11 @@
 		}
 	}
 
+	function onComplete() {
+		task.done = !task.done;
+		dispatch("complete");
+	}
+
 	function onDelete() {
 		dispatch("delete");
 	}
@@ -88,7 +93,7 @@
 		>
 			<div class="flex space-x-2 align-middle">
 				<MaterialSymbolsDragIndicator />
-				<button on:click={() => (task.done = !task.done)}>
+				<button on:click={onComplete}>
 					<MaterialSymbolsCheckCircleRounded
 						class="text-6 hover:scale-120 text-white transition-all {task.done
 							? 'hover:text-opacity-95'

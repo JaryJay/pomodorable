@@ -17,6 +17,11 @@
             })
             .catch(console.error);
     }
+
+    function save() {
+        invoke("save_data", { data: JSON.stringify(tasks) });
+    }
+
     onMount(() => {
         loadUserSettings();
         completedPomodoroCount.subscribe((value) => {
@@ -30,12 +35,12 @@
             currentTask = task;
         }
         tasks = [...tasks, task as Task];
-        invoke("save_data", { data: JSON.stringify(tasks) });
+        save();
     }
 
     function deleteTaskCard(index: number) {
         tasks = tasks.filter((_, i) => i !== index);
-        invoke("save_data", { data: JSON.stringify(tasks) });
+        save();
     }
 
     let expandNewTaskForm = false;
@@ -48,7 +53,7 @@
     </div>
     <div class="space-y-4 transition-all">
         {#each tasks as task, i (task.name)}
-            <TaskCard bind:task on:delete={() => deleteTaskCard(i)} />
+            <TaskCard bind:task on:delete={() => deleteTaskCard(i)} on:complete={save} />
         {/each}
         <CreateTaskForm
             on:create={(event) => addTask(event.detail)}
