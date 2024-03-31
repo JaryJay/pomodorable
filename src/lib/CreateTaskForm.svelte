@@ -2,6 +2,7 @@
 	import { createEventDispatcher, onMount } from "svelte";
 	import type { Task } from "./tasks";
 	import Button from "./Button.svelte";
+    import Timer from "./Timer.svelte";
 
 	export let expanded = false;
 
@@ -11,6 +12,7 @@
 	const dispatch = createEventDispatcher();
 
 	const generateNewTask = (): Task => ({
+		id: Date.now(),
 		name: "",
 		description: "",
 		completedPomodoros: 0,

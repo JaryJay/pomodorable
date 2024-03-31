@@ -6,10 +6,12 @@
         sendNotification,
     } from "@tauri-apps/api/notification";
     import Button from "./Button.svelte";
-    import MaterialSymbolsSkipNextRounded from '~icons/material-symbols/skip-next-rounded';
+    import MaterialSymbolsSkipNextRounded from "~icons/material-symbols/skip-next-rounded";
+    import MaterialSymbolsSettings from '~icons/material-symbols/settings';
     import { LONG_BREAK, POMODORO, SHORT_BREAK, states } from "./timer";
     import TextButton from "./TextButton.svelte";
     import { completedPomodoroCount } from "./store";
+    import { settings } from "./settings";
 
     export let on = true;
 
@@ -63,8 +65,11 @@
     }
 
     $: formattedTime = ((): string => {
-        const seconds = time % 60;
-        const minutes = (time - seconds) / 60;
+        const displayTime = settings.countdown
+            ? states[currentState].time - time
+            : time;
+        const seconds = displayTime % 60;
+        const minutes = (displayTime - seconds) / 60;
         let result: string = (minutes < 10 ? "0" : "") + minutes;
         result += (seconds < 10 ? ":0" : ":") + seconds;
         return result;
@@ -77,7 +82,6 @@
 
     onMount(async () => {
         let permissionGranted = await isPermissionGranted();
-        console.log({ permissionGranted });
 
         if (!permissionGranted) {
             const permission = await requestPermission();
@@ -94,6 +98,10 @@
             intervalID = setInterval(updateTime, 1000);
         }
     };
+
+    const openSettings = () => {
+
+    }
 </script>
 
 <div
@@ -121,10 +129,17 @@
 
     <div class="grid grid-cols-3 px-4 gap-20">
         <div />
-        <Button on:click={toggleTimer} class="">{on ? "Pause" : "Resume"}</Button>
+        <Button on:click={toggleTimer} class=""
+            >{on ? "Pause" : "Resume"}</Button
+        >
         <div class="flex align-middle justify-end">
+            <TextButton on:click={openSettings}>
+                <MaterialSymbolsSettings />
+            </TextButton>
             <TextButton on:click={moveToNextState}>
-                <MaterialSymbolsSkipNextRounded class="text-lg opacity-60 hover:opacity-80 transition-all" />
+                <MaterialSymbolsSkipNextRounded
+                    class="text-lg opacity-60 hover:opacity-80 transition-all"
+                />
             </TextButton>
         </div>
     </div>

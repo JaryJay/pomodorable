@@ -8,6 +8,8 @@
     import { completedPomodoroCount } from "./store";
 
     let currentTask: Task | null = null;
+    let expandedTask: Task | null = null;
+    let draggedTaskIndex: number = -1;
     let tasks: Task[] = [];
 
     async function loadUserSettings() {
@@ -26,7 +28,6 @@
         loadUserSettings();
         completedPomodoroCount.subscribe((value) => {
             if (currentTask) currentTask.completedPomodoros++;
-            console.log({ value });
         });
     });
 
@@ -43,6 +44,27 @@
         save();
     }
 
+    function onDragOver(i: number) {
+        if (draggedTaskIndex == -1) return;
+        // Move the dragged task to the new position
+        if (draggedTaskIndex < i) {
+            tasks = [
+                ...tasks.slice(0, draggedTaskIndex),
+                ...tasks.slice(draggedTaskIndex + 1, i + 1),
+                tasks[draggedTaskIndex],
+                ...tasks.slice(i + 1),
+            ];
+        } else if (draggedTaskIndex > i) {
+            tasks = [
+                ...tasks.slice(0, i),
+                tasks[draggedTaskIndex],
+                ...tasks.slice(i, draggedTaskIndex),
+                ...tasks.slice(draggedTaskIndex + 1),
+            ];
+        }
+        draggedTaskIndex = i;
+    }
+
     let expandNewTaskForm = false;
 </script>
 
@@ -51,9 +73,23 @@
         <h2 class="text-lg">Task List</h2>
         <div><button>.</button></div>
     </div>
-    <div class="space-y-4 transition-all">
-        {#each tasks as task, i (task.name)}
-            <TaskCard bind:task on:delete={() => deleteTaskCard(i)} on:complete={save} />
+    <!-- svelte-ignore a11y-incorrect-aria-attribute-type -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="space-y-4" on:dragover|preventDefault>
+        {#each tasks as task, i (task.id)}
+            <TaskCard
+                on:click={() => (currentTask = task)}
+                selected={task == currentTask}
+                bind:task
+                on:delete={() => deleteTaskCard(i)}
+                on:complete={save}
+                on:expand={() => (expandedTask = task)}
+                dragged={draggedTaskIndex == i}
+                on:dragstart={() => (draggedTaskIndex = i)}
+                on:dragend={() => (draggedTaskIndex = -1) && save()}
+                on:dragover={() => onDragOver(i)}
+                expanded={expandedTask == task}
+            />
         {/each}
         <CreateTaskForm
             on:create={(event) => addTask(event.detail)}

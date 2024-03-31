@@ -12,6 +12,7 @@
   },
   "tauri": {
     "allowlist": {
+      "all": true,
       "fs": {
         "all": true
       },
@@ -75,7 +76,8 @@
         "height": 600,
         "resizable": true,
         "title": "Pomodorable",
-        "width": 800
+        "width": 800,
+        "fileDropEnabled": false
       }
     ]
   }
