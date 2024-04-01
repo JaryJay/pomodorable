@@ -17,7 +17,10 @@
             .then((result: unknown) => {
                 if (result) tasks = JSON.parse(result as string) as Task[];
             })
-            .catch(console.error);
+            .catch((error: any) => {
+                console.error(error);
+                
+            });
     }
 
     function save() {

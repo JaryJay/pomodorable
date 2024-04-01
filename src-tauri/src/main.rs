@@ -4,7 +4,7 @@
 use std::{
     fs::{self, File},
     io::Write,
-    path::PathBuf,
+    path::PathBuf
 };
 
 fn main() {
@@ -26,20 +26,30 @@ fn load_tasks(app_handle: tauri::AppHandle) -> Result<String, String> {
         .unwrap_or(std::path::PathBuf::new());
     fs::create_dir_all(&path).unwrap();
     path.push("savefilepath.txt");
-    
+
+    if !path.exists() {
+        match fs::write(&path, default_savepath(&app_handle).to_str().unwrap()) {
+            Ok(_) => (),
+            Err(_) => return Err("Could not write to savefilepath.txt.".into()),
+        };
+    }
+
     let save_path_string = match fs::read_to_string(path) {
         Ok(s) => s,
-        Err(_) => return Err("Could not read savefilepath.txt".into()),
+        Err(_) => return Err("Could not read savefilepath.txt.".into()),
     };
 
-    let save_path = if save_path_string.is_empty() {
-        default_savepath(app_handle)
-    } else {
-        PathBuf::from(save_path_string)
-    };
+    let save_path = PathBuf::from(save_path_string);
+    // If the save.md does not exist, create it
+    if !save_path.exists() {
+        match fs::write(&save_path, b"[]") {
+            Ok(_) => (),
+            Err(e) => return Err(e.to_string()),
+        };
+    }
     match fs::read_to_string(save_path) {
         Ok(s) => Ok(s),
-        Err(_) => Err("Something went wrong".into()),
+        Err(e) => Err(e.to_string()),
     }
 }
 
@@ -61,7 +71,7 @@ fn save_data(app_handle: tauri::AppHandle, data: String) -> Result<(), String> {
         Err(_) => return Err("Could not read savefile!".into()),
     };
     let save_path = if save_path_string.is_empty() {
-        default_savepath(app_handle)
+        default_savepath(&app_handle)
     } else {
         PathBuf::from(save_path_string)
     };
@@ -91,7 +101,7 @@ fn update_savefile_path(app_handle: tauri::AppHandle, new_path: String) -> Resul
     Ok(())
 }
 
-fn default_savepath(app_handle: tauri::AppHandle) -> PathBuf {
+fn default_savepath(app_handle: &tauri::AppHandle) -> PathBuf {
     let mut path = app_handle.path_resolver().app_data_dir().unwrap();
     path.push("save.md");
     path
