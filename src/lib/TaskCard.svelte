@@ -11,7 +11,7 @@
 
 	export let task: Task;
 	export let selected: boolean;
-	export let expanded = false;
+	export let opened = false;
 	export let dragged = false;
 
 	let editTaskCopy: Task = JSON.parse(JSON.stringify(task));
@@ -26,7 +26,10 @@
 	function onDragStart(event: DragEvent) {
 		dx = event.clientX - card.getBoundingClientRect().x;
 		dy = event.clientY - card.getBoundingClientRect().y;
-		event.dataTransfer?.setDragImage(card, dx, dy);
+		if (event.dataTransfer) {
+			event.dataTransfer.setDragImage(card, dx, dy);
+			// event.dataTransfer.effectAllowed = "uninitialized";
+		}
 
 		dispatch("dragstart", event);
 	}
@@ -39,9 +42,16 @@
 		dispatch("dragover", event);
 	}
 
+	function onOpen() {
+		dispatch("open");
+		setTimeout(() => nameInput.focus());
+	}
+
 	function onKeyDown(event: KeyboardEvent) {
 		if (event.key == "Enter") {
-			expanded = false;
+			onSave();
+		} else if (event.key == "Escape") {
+			onCancel();
 		}
 	}
 
@@ -55,12 +65,12 @@
 	}
 
 	function onCancel() {
-		expanded = false;
+		dispatch("close");
 		editTaskCopy = JSON.parse(JSON.stringify(task));
 	}
 
 	function onSave() {
-		expanded = false;
+		dispatch("close");
 		task = editTaskCopy;
 		editTaskCopy = JSON.parse(JSON.stringify(task));
 	}
@@ -74,7 +84,7 @@
 	on:dragover|preventDefault={onDragOver}
 	role="banner"
 >
-	{#if expanded}
+	{#if opened}
 		<div class="flex flex-col space-y-2 items-start">
 			<div class="w-full flex flex-col items-start p-4 space-y-2">
 				<input
@@ -131,7 +141,7 @@
 			class:border-l-8={selected}
 			class="flex p-4 pl-1 space-x-2 justify-between bg-indigo-300 rounded-md bg-clip-padding backdrop-filter backdrop-blur-[2px] bg-opacity-40 border-indigo-200 border-opacity-40 shadow-lg"
 		>
-			<div class="flex space-x-2">
+			<div class="flex space-x-2 flex-grow">
 				<div
 					class="cursor-move h-full"
 					draggable="true"
@@ -139,7 +149,9 @@
 					on:dragstart={onDragStart}
 					on:dragend={onDragEnd}
 				>
-					<MaterialSymbolsDragIndicator class="text-lg opacity-80 hover:opacity-100 transition-all" />
+					<MaterialSymbolsDragIndicator
+						class="text-lg opacity-80 hover:opacity-100 transition-all"
+					/>
 				</div>
 
 				<button on:click={onComplete}>
@@ -150,14 +162,14 @@
 					/>
 				</button>
 
-				<div>
+				<button class="w-full text-left cursor-text" on:click={onOpen}>
 					<p>{task.name}</p>
-				</div>
+				</button>
 			</div>
-			<div class="flex space-x-2 align-middle">
+			<div class="flex flex-grow-1 space-x-2 align-middle">
 				<p>{task.completedPomodoros} / {task.estimatedPomodoros}</p>
 				<button
-					on:click={() => dispatch("expand")}
+					on:click={onOpen}
 					class="hover:bg-indigo-300 rounded-full bg-opacity-40 transition-all"
 				>
 					<MaterialSymbolsMoreVert class="text-6" />

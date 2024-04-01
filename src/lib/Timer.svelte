@@ -7,7 +7,7 @@
     } from "@tauri-apps/api/notification";
     import Button from "./Button.svelte";
     import MaterialSymbolsSkipNextRounded from "~icons/material-symbols/skip-next-rounded";
-    import MaterialSymbolsSettings from '~icons/material-symbols/settings';
+    import MaterialSymbolsSettings from "~icons/material-symbols/settings";
     import { LONG_BREAK, POMODORO, SHORT_BREAK, states } from "./timer";
     import TextButton from "./TextButton.svelte";
     import { completedPomodoroCount } from "./store";
@@ -99,48 +99,42 @@
         }
     };
 
-    const openSettings = () => {
-
-    }
+    const openSettings = () => {};
 </script>
 
-<div
-    class="space-y-2 p-8 bg-indigo-300 items-center justify-center rounded-md bg-clip-padding backdrop-filter backdrop-blur-[2px] bg-opacity-20 border border-indigo-100 border-opacity-20 shadow-lg"
->
-    <div class="flex justify-center space-x-4 mb-4">
-        {#each states as state, i (state.name)}
-            {#if i == currentState}
-                <TextButton class="bg-gray-600 bg-opacity-40"
-                    ><b>{state.name}</b></TextButton
-                >
-            {:else}
-                <TextButton on:click={() => setState(i)}
-                    >{state.name}</TextButton
-                >
-            {/if}
-        {/each}
-    </div>
-    <span class="text-3xl bg-white bg-opacity-20">
-        <h1>{formattedTime}</h1>
-    </span>
-    <div class="text-opacity-60 text-gray-100">
-        #{pomodoroNumber}
-    </div>
+<div class="panel py-4 md:py-5 lg:py-6 px-2 md:px-8 grid grid-cols-12">
+    <div class="col-span-1" />
+    <div class="col-span-10">
+        <div class="flex justify-center space-x-1 md:space-x-4 mb-4">
+            {#each states as state, i (state.name)}
+                {#if i == currentState}
+                    <TextButton class="bg-gray-600 bg-opacity-40"
+                        ><b>{state.name}</b></TextButton
+                    >
+                {:else}
+                    <TextButton on:click={() => setState(i)}
+                        >{state.name}</TextButton
+                    >
+                {/if}
+            {/each}
+        </div>
+        <h1 class="text-8xl leading-tight">{formattedTime}</h1>
+        <div class="text-opacity-60 text-gray-100 pb-2">#{pomodoroNumber}</div>
 
-    <div class="grid grid-cols-3 px-4 gap-20">
-        <div />
-        <Button on:click={toggleTimer} class=""
+        <Button on:click={toggleTimer} class="w-1/2"
             >{on ? "Pause" : "Resume"}</Button
         >
-        <div class="flex align-middle justify-end">
-            <TextButton on:click={openSettings}>
-                <MaterialSymbolsSettings />
-            </TextButton>
-            <TextButton on:click={moveToNextState}>
-                <MaterialSymbolsSkipNextRounded
-                    class="text-lg opacity-60 hover:opacity-80 transition-all"
-                />
-            </TextButton>
-        </div>
+    </div>
+    <div class="col-span-1 flex flex-col justify-between items-end my-1">
+        <TextButton on:click={openSettings}>
+            <MaterialSymbolsSettings
+                class="text-lg opacity-60 hover:opacity-100 transition-all"
+            />
+        </TextButton>
+        <TextButton on:click={moveToNextState}>
+            <MaterialSymbolsSkipNextRounded
+                class="text-lg opacity-60 hover:opacity-100 transition-all"
+            />
+        </TextButton>
     </div>
 </div>

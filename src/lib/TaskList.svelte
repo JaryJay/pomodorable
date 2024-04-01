@@ -8,7 +8,7 @@
     import { completedPomodoroCount } from "./store";
 
     let currentTask: Task | null = null;
-    let expandedTask: Task | null = null;
+    let openedTask: Task | null = null;
     let draggedTaskIndex: number = -1;
     let tasks: Task[] = [];
 
@@ -68,14 +68,14 @@
     let expandNewTaskForm = false;
 </script>
 
-<div class="p-8 space-y-4 bg-indigo-300 border-indigo-100 glass-morphism">
+<div class="p-4 md:p-6 lg:p-8 space-y-4 bg-indigo-300 border-indigo-100 glass-morphism" class:cursor-grabbing={draggedTaskIndex != -1}>
     <div class="flex justify-between w-full">
         <h2 class="text-lg">Task List</h2>
         <div><button>.</button></div>
     </div>
     <!-- svelte-ignore a11y-incorrect-aria-attribute-type -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div class="space-y-4" on:dragover|preventDefault>
+    <div class="space-y-4" on:dragover|preventDefault on:dragenter|preventDefault>
         {#each tasks as task, i (task.id)}
             <TaskCard
                 on:click={() => (currentTask = task)}
@@ -83,12 +83,13 @@
                 bind:task
                 on:delete={() => deleteTaskCard(i)}
                 on:complete={save}
-                on:expand={() => (expandedTask = task)}
+                on:open={() => (openedTask = task)}
+                on:close={() => (openedTask = null)}
+                opened={openedTask == task}
                 dragged={draggedTaskIndex == i}
-                on:dragstart={() => (draggedTaskIndex = i)}
+                on:dragstart={() => (draggedTaskIndex = i) && (openedTask = null)}
                 on:dragend={() => (draggedTaskIndex = -1) && save()}
                 on:dragover={() => onDragOver(i)}
-                expanded={expandedTask == task}
             />
         {/each}
         <CreateTaskForm
