@@ -2,6 +2,20 @@
     import { onMount } from "svelte";
     import TaskList from "./TaskList.svelte";
     import Timer from "./Timer.svelte";
+    import { register, unregister } from "@tauri-apps/api/globalShortcut";
+
+    onMount(() => {
+        (async () => {
+            await unregister("CommandOrControl+Alt+Shift+P")
+            await register("CommandOrControl+Alt+Shift+P", () => {
+                console.log("Shortcut triggered");
+            })
+            console.log("Registered shortcut.")
+        })()
+
+        return () => unregister("CommandOrControl+Alt+Shift+P")
+    })
+    
 </script>
 
 <div

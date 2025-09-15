@@ -4,7 +4,7 @@
 
 @layer utilities {
   .glass-morphism {
-    @apply rounded-md bg-clip-padding backdrop-filter backdrop-blur-[2px] bg-opacity-20 border border-opacity-20 shadow-lg
+    @apply rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-20 border border-opacity-20 shadow-lg
   }
 
   .glass-morphism-basic {
@@ -21,7 +21,8 @@
   @apply leading-normal font-normal text-white bg-gray-900 antialiased;
 
   color-scheme: light dark;
-  background-color: #242424;
+  background: transparent;
+  /* background-color: #242424; */
 
   text-rendering: optimizeLegibility;
 }
@@ -41,7 +42,7 @@ html {
 }
 
 body {
-  @apply m-0 h-full overflow-auto;
+  @apply m-0 h-full overflow-auto border-0 border-black;
   /* Hide scroll bar */
   -ms-overflow-style: none;  /* Internet Explorer 10+ */
   scrollbar-width: none;  /* Firefox */
@@ -49,7 +50,7 @@ body {
 
 
 #app {
-  @apply min-h-screen my-0 mx-auto text-center bg-fixed bg-cover;
+  @apply min-h-screen my-0 mx-auto text-center bg-fixed bg-cover bg-slate-300 backdrop-blur-sm border-none rounded-none;
   background-image: url("https://www.pixground.com/wp-content/uploads/2023/07/Abstract-Gradient-Blue-Layers-AI-Generated-4K-Wallpaper-jpg.webp");
 }
 

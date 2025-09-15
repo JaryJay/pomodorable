@@ -16,6 +16,9 @@
       "fs": {
         "all": true
       },
+      "globalShortcut": {
+        "all": true
+      },
       "path": {
         "all": true
       },
@@ -72,10 +75,12 @@
     },
     "windows": [
       {
+        "decorations": true,
         "fullscreen": false,
         "height": 600,
         "resizable": true,
         "title": "Pomodorable",
+        "transparent": true,
         "width": 800,
         "fileDropEnabled": false
       }

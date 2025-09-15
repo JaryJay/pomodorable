@@ -4,10 +4,29 @@
 use std::{
     fs::{self, File},
     io::Write,
-    path::PathBuf
+    path::PathBuf,
+    sync::Mutex,
 };
+use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 
-fn main() {
+// struct DiscordClientWrapper<'a> {
+//     client: Mutex<&'a mut DiscordIpcClient>
+// }
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // let mut client = DiscordIpcClient::new("1224191406919258152")?;
+    // client.connect()?;
+    // client.set_activity(activity::Activity::new()
+    //     .state("Focusing")
+    //     .timestamps(activity::Timestamps::new()
+    //         .end(1711943202))
+    //     .details("Working on \"task name\"")
+    //     .assets(activity::Assets::new()
+    //         .large_image("image_0") 
+    //         .large_text("Some placeholder text"))
+    // )?;
+    // println!("Connected to Discord!");
+
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             load_tasks,
@@ -16,6 +35,11 @@ fn main() {
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+
+
+    // client.close()?;
+    // println!("Closing Discord connection...");
+    Ok(())
 }
 
 #[tauri::command]
